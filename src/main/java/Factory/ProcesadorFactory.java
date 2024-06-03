@@ -5,7 +5,7 @@ import Entidad.Procesador;
 public class ProcesadorFactory implements Factory<Procesador>{
     private static ProcesadorFactory instance;
 
-    private ProcesadorFactory(){};
+    private ProcesadorFactory(){}
 
     public static ProcesadorFactory getInstance(){
         if (instance==null)
