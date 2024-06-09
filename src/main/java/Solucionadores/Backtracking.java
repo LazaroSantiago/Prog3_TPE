@@ -24,8 +24,19 @@ public class Backtracking implements SolucionadorAbstracto {
         this.solucionActual = new HashSet<>(procesadores.size());
     }
 
-    //todo: describir el backtracking...
-    //aunque es un backtracking de toda la vida......
+
+    //O(n^m) siendo n la cantidad de procesadores y m la cantidad de tareas
+    //la solucion es un backtracking clasico:
+
+    //el caso de corte es que la lista de tareas este vacia
+        //si lo esta, se revisa si la solucion actual es mejor que la final
+            //en caso de que lo sea, la solucion actual se vuelve la final
+
+    //el caso recursivo consiste en obtener la primer tarea de la lista de tareas
+        //luego, por cada procesador, revisar si se la puede agregar a ese procesador
+            //en caso de que se pueda, se hace backtracking, y al final del backtracking se la remueve del procesador
+    //finalmente, se la vuelve a agregar al principio de la lista
+
     public void backtracking(int tiempo) {
         int countTareas = refrezcar(tiempo);
 
@@ -36,6 +47,30 @@ public class Backtracking implements SolucionadorAbstracto {
 
         this.esPosibleSolucionar = verificarSolucion(countTareas);
     }
+
+    private void backtracking() {
+        if (tareas.isEmpty()) {
+            if (solucionActualEsMejor()) {
+                this.deepCopy();
+            }
+        } else {
+            Tarea t = tareas.removeFirst();
+
+            for (Procesador p : procesadores) {
+                solucionActual.add(p);
+
+                if (p.agregarTarea(t)) {
+                    if (solucionActualEsMejor()){
+                        countEstados++;
+                        backtracking();
+                    }
+                    p.quitarTarea();
+                }
+            }
+            tareas.addFirst(t);
+        }
+    }
+
 
     private int refrezcar(int tiempo) {
         int countTareas = this.tareas.size();
@@ -59,29 +94,6 @@ public class Backtracking implements SolucionadorAbstracto {
         return countTareasAsignadas == countTareas;
     }
 
-    //todo: complejidad computacional backtracking
-    private void backtracking() {
-        if (tareas.isEmpty()) {
-            if (solucionActualEsMejor()) {
-                this.deepCopy();
-            }
-        } else {
-            Tarea t = tareas.removeFirst();
-
-            for (Procesador p : procesadores) {
-                solucionActual.add(p);
-
-                if (p.agregarTarea(t)) {
-                    if (solucionActualEsMejor()){
-                        countEstados++;
-                        backtracking();
-                    }
-                    p.quitarTarea();
-                }
-            }
-            tareas.addFirst(t);
-        }
-    }
 
     private boolean solucionActualEsMejor() {
         //obtener tiempo mayor de solucion actual

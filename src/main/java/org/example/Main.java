@@ -10,8 +10,6 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
-        //todo: testear mas casos
-        //todo: readme
 
         testearBacktracking(0);
         testearGreedy(0);

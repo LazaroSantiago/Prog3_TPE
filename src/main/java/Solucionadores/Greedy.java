@@ -17,7 +17,6 @@ public class Greedy implements SolucionadorAbstracto {
         this.tareas = tareas;
     }
 
-    //todo: consultar si arrancar en un procesador al azar es mejor o peor...
     //complejidad O(n*m) siendo n la cantidad de tareas y m la cantidad de procesadores
 
     //La solucion consiste en:
@@ -59,8 +58,12 @@ public class Greedy implements SolucionadorAbstracto {
     }
 
     private boolean agregarTarea(Tarea t, Procesador p) {
-        countCandidatos++;
-        return p.agregarTarea(t);
+        if (p.agregarTarea(t)){
+            countCandidatos++;
+            return true;
+        }
+
+        return false;
     }
 
     private int getIndiceProcesadorMenosCargado() {
@@ -92,9 +95,9 @@ public class Greedy implements SolucionadorAbstracto {
 
     private boolean seleccionar(int indiceProcesador, Tarea t) {
         //iterar por el resto de los procesadores
-            //si en ninguna instancia se pudo agregar,
+            //si en alguna instancia se pudo agregar,
                 //retornar true
-            //si se pudo
+            //si no se pudo
                 //retornar false
 
         int size = procesadores.size();
