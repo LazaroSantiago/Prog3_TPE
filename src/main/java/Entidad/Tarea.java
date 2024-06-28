@@ -1,12 +1,11 @@
 package Entidad;
 
-public class Tarea {
+public class Tarea implements Comparable<Tarea> {
     private String idTarea;
     private String nombreTarea;
     private int tiempoEjecucion;
     private boolean esCritica;
     private int nivelPrioridad;
-    private static int countCriticas = 0;
 
     public Tarea(String idTarea, String nombreTarea, int tiempoEjecucion, boolean esCritica, int nivelPrioridad) {
         this.idTarea = idTarea;
@@ -14,8 +13,6 @@ public class Tarea {
         this.tiempoEjecucion = tiempoEjecucion;
         this.esCritica = esCritica;
         this.setNivelPrioridad(nivelPrioridad);
-        if (this.esCritica)
-            countCriticas++;
     }
 
     public String getIdTarea() {
@@ -47,12 +44,13 @@ public class Tarea {
             this.nivelPrioridad = nivelPrioridad;
     }
 
-    public static int getCountCriticas(){
-        return countCriticas;
+    @Override
+    public String toString() {
+        return idTarea + ", tiempo: " + tiempoEjecucion + ", critica: " + esCritica;
     }
 
     @Override
-    public String toString() {
-        return idTarea + ", tiempo: " + tiempoEjecucion;
+    public int compareTo(Tarea t) {
+        return Integer.compare(this.tiempoEjecucion, t.tiempoEjecucion);
     }
 }

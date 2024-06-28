@@ -2,18 +2,17 @@ package Entidad;
 
 import java.util.LinkedList;
 
-public class Procesador {
+public class Procesador implements Comparable<Procesador> {
+    private static int tiempo;
     private String idProcesador;
     private String codigoProcesador;
     private boolean estaRefrigerado;
     private int anioFuncionamiento;
     private LinkedList<Tarea> tareasAsignadas;
-
     private int countTareasCriticasAsignadas;
     private int tiempoEjecucionProcesador;
-    private static int tiempo;
 
-    public Procesador(Procesador p){
+    public Procesador(Procesador p) {
         this(p.idProcesador, p.getCodigoProcesador(), p.estaRefrigerado, p.anioFuncionamiento, p.tareasAsignadas, p.countTareasCriticasAsignadas, p.tiempoEjecucionProcesador);
     }
 
@@ -26,9 +25,9 @@ public class Procesador {
     }
 
     public Procesador(String idProcesador, String codigoProcesador,
-                           boolean estaRefrigerado, int anioFuncionamiento,
-                           LinkedList<Tarea> tareasAsignadas,
-                           int countTareasCriticasAsignadas, int tiempoEjecucionProcesador) {
+                      boolean estaRefrigerado, int anioFuncionamiento,
+                      LinkedList<Tarea> tareasAsignadas,
+                      int countTareasCriticasAsignadas, int tiempoEjecucionProcesador) {
         this.idProcesador = idProcesador;
         this.codigoProcesador = codigoProcesador;
         this.estaRefrigerado = estaRefrigerado;
@@ -36,6 +35,10 @@ public class Procesador {
         this.tareasAsignadas = new LinkedList<>(tareasAsignadas);
         this.countTareasCriticasAsignadas = countTareasCriticasAsignadas;
         this.tiempoEjecucionProcesador = tiempoEjecucionProcesador;
+    }
+
+    public static void setTiempo(int nuevoTiempo) {
+        tiempo = nuevoTiempo;
     }
 
     public String getIdProcesador() {
@@ -58,12 +61,8 @@ public class Procesador {
         return this.tiempoEjecucionProcesador;
     }
 
-    public static void setTiempo(int nuevoTiempo){
-        tiempo = nuevoTiempo;
-    }
-
-    public boolean agregarTarea(Tarea t){
-        if (validarAgregar(t)){
+    public boolean agregarTarea(Tarea t) {
+        if (validarAgregar(t)) {
             tareasAsignadas.add(t);
             tiempoEjecucionProcesador += t.getTiempoEjecucion();
 
@@ -72,18 +71,17 @@ public class Procesador {
 
             return true;
         }
+
         return false;
     }
 
-    public Tarea quitarTarea(){
+    public Tarea quitarTarea() {
         Tarea t = this.tareasAsignadas.removeLast();
         tiempoEjecucionProcesador -= t.getTiempoEjecucion();
-        return t;
-    }
 
-    public Tarea quitarTarea(int i){
-        Tarea t = this.tareasAsignadas.remove(i);
-        tiempoEjecucionProcesador -= t.getTiempoEjecucion();
+        if (t.esCritica())
+            countTareasCriticasAsignadas--;
+
         return t;
     }
 
@@ -99,7 +97,7 @@ public class Procesador {
     }
 
     private boolean validarCritica() {
-        return countTareasCriticasAsignadas <= 2;
+        return countTareasCriticasAsignadas < 2;
     }
 
     private boolean validarRefrigerado(Tarea t) {
@@ -107,7 +105,7 @@ public class Procesador {
         return ((tiempoEjecucionProcesador + t.getTiempoEjecucion()) <= tiempo);
     }
 
-    public int getCountTareasAsignadas(){
+    public int getCountTareasAsignadas() {
         return this.tareasAsignadas.size();
     }
 
@@ -116,4 +114,8 @@ public class Procesador {
         return "\nProcesador: " + idProcesador + ". " + "Tareas: " + tareasAsignadas;
     }
 
+    @Override
+    public int compareTo(Procesador p) {
+        return Integer.compare(this.tiempoEjecucionProcesador, p.getTiempoEjecucionProcesador());
+    }
 }

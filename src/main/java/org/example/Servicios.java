@@ -2,70 +2,81 @@ package org.example;
 
 import Entidad.Procesador;
 import Entidad.Tarea;
-import Factory.ProcesadorFactory;
-import Factory.TareaFactory;
 import Helper.CSVHelper;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 public class Servicios {
     private List<Procesador> procesadores;
-    private List<Tarea> tareas;
-    private int countTareasCriticas;
+
+    //indice de tareas por ID utilizando un hashmap para optimizar servicio 1
+    private Map<String, Tarea> indexTareas;
+
+    //listas de tareas criticas y no criticas para optimizar servicio 2
+    private List<Tarea> tareasCriticas;
+    private List<Tarea> tareasNoCriticas;
+
+    //arbol rojo-negro para optimizar servicio 3
+    private NavigableMap<Integer, List<Tarea>> tareas;
 
     /*
      * Complejidad temporal:
-     * O(n)
+     * O(n+m) siendo n la cantidad de tareas y m la cantidad de procesadores
      */
     public Servicios(String pathProcesadores, String pathTareas) {
-        CSVHelper<Procesador> helperProcesador = new CSVHelper<Procesador>(ProcesadorFactory.getInstance());
-        CSVHelper<Tarea> helperTarea = new CSVHelper<Tarea>(TareaFactory.getInstance());
+        CSVHelper helper = new CSVHelper(pathProcesadores, pathTareas);
 
-        this.procesadores = helperProcesador.crearLista(pathProcesadores);
-        this.tareas = helperTarea.crearLista(pathTareas);
-        this.countTareasCriticas = TareaFactory.getCountCriticas();
+        this.procesadores = helper.getProcesadores();
+        this.tareas = helper.getTareasPorPrioridad();
+        this.tareasCriticas = helper.getTareasCriticas();
+        this.tareasNoCriticas = helper.getTareasNoCriticas();
+        this.indexTareas = helper.getIndexTareas();
     }
 
     /* Complejidad temporal:
-     * O(n)
-     * aunque se puede cambiar la estructura a un hashset para que sea O(1) */
+     * O(1)
+     * El get de un HashMap es O(1).
+     * */
     public Tarea servicio1(String ID) {
-        for (Tarea t : tareas)
-            if (t.getIdTarea().equals(ID))
-                return t;
+        if (ID == null)
+            return null;
 
-        return null;
+        return indexTareas.get(ID);
     }
 
     /*
      * Complejidad temporal:
-     * O(n)
+     * O(1)
+     * En CSVHelper al crear la lista de tareas tambien se crean otras dos listas con las tareas criticas y no criticas respectivamente.
+     * Sencillamente se devuelven esas listas.
      */
     public List<Tarea> servicio2(boolean esCritica) {
-        List<Tarea> result = new LinkedList<>();
+        if (esCritica)
+            return this.tareasCriticas;
 
-        for (Tarea t : tareas)
-            if (t.esCritica() == esCritica)
-                result.add(t);
-
-        return result;
+        return this.tareasNoCriticas;
     }
 
     /*
-     * Complejidad temporal del constructor:
-     * O(n)
+     * Complejidad temporal:
+     * O(n) siendo n las tareas desde prioridadInferior hasta prioridadSuperior
+     * Sigue siendo O(n) pero, en promedio va a ser mejor a recorrer todas las tareas linealmente
      */
     public List<Tarea> servicio3(int prioridadInferior, int
             prioridadSuperior) {
-        List<Tarea> result = new ArrayList<>();
 
-        for (Tarea t : tareas)
-            if ((t.getNivelPrioridad() >= prioridadInferior) &&
-                    (t.getNivelPrioridad() <= prioridadSuperior))
-                result.add(t);
+        //chequeo defensivamente que mi numero inferior no sea mayor al superior
+        if (prioridadInferior > prioridadSuperior)
+            return new LinkedList<>();
 
+        //obtengo las tareas de prioridadInferior hasta prioridad superior.
+        //(internamente esta implementado como una lista de listas de tarea)
+        Collection<List<Tarea>> values = tareas.subMap(prioridadInferior, prioridadSuperior).values();
+
+        //"aplano" las listas de listas en una sola lista
+        List<Tarea> result = values.stream().flatMap(Collection::stream).toList();
+
+        //retorno esa lista
         return result;
     }
 
@@ -74,6 +85,11 @@ public class Servicios {
     }
 
     public List<Tarea> getTareas() {
-        return tareas;
+        Collection<List<Tarea>> values = tareas.values();
+        return new LinkedList<>(values.stream().flatMap(Collection::stream).toList());
+    }
+
+    public int countCriticas() {
+        return this.tareasCriticas.size();
     }
 }

@@ -2,6 +2,7 @@ package Solucionadores;
 
 import Entidad.Procesador;
 import Entidad.Tarea;
+import org.example.Servicios;
 
 import java.util.*;
 
@@ -16,26 +17,32 @@ public class Backtracking implements SolucionadorAbstracto {
     private int tiempoFinal;
     private boolean esPosibleSolucionar;
     private int countEstados;
+    private int countCriticas;
 
-    public Backtracking(List<Procesador> procesadores, List<Tarea> tareas) {
-        this.procesadores = procesadores;
-        this.tareas = tareas;
+    public Backtracking (Servicios servicios){
+        this.procesadores = servicios.getProcesadores();
+        this.tareas = servicios.getTareas();
+        this.countCriticas = servicios.countCriticas();
+
         this.solucionFinal = new ArrayList<>(procesadores.size());
         this.solucionActual = new HashSet<>(procesadores.size());
     }
 
+    //La complejidad es:
+    // O(n^m) siendo n la cantidad de procesadores y m la cantidad de tareas
 
-    //O(n^m) siendo n la cantidad de procesadores y m la cantidad de tareas
     //la solucion es un backtracking clasico:
-
-    //el caso de corte es que la lista de tareas este vacia
-        //si lo esta, se revisa si la solucion actual es mejor que la final
-            //en caso de que lo sea, la solucion actual se vuelve la final
 
     //el caso recursivo consiste en obtener la primer tarea de la lista de tareas
         //luego, por cada procesador, revisar si se la puede agregar a ese procesador
             //en caso de que se pueda, se hace backtracking, y al final del backtracking se la remueve del procesador
     //finalmente, se la vuelve a agregar al principio de la lista
+
+    //el caso de corte es que la lista de tareas este vacia
+        //si lo esta, se revisa si la solucion actual es mejor que la final
+            //en caso de que lo sea, la solucion actual se vuelve la final
+
+    //la solucion va a aparecer en el ArrayList solucionFinal
 
     public void backtracking(int tiempo) {
         int countTareas = refrezcar(tiempo);
@@ -49,25 +56,26 @@ public class Backtracking implements SolucionadorAbstracto {
     }
 
     private void backtracking() {
+        countEstados++;
+
         if (tareas.isEmpty()) {
             if (solucionActualEsMejor()) {
                 this.deepCopy();
             }
         } else {
-            Tarea t = tareas.removeFirst();
+            Tarea t = tareas.remove(0);
 
             for (Procesador p : procesadores) {
                 solucionActual.add(p);
 
                 if (p.agregarTarea(t)) {
-                    if (solucionActualEsMejor()){
-                        countEstados++;
+                    if (solucionActualEsMejor())
                         backtracking();
-                    }
+
                     p.quitarTarea();
                 }
             }
-            tareas.addFirst(t);
+            tareas.add(0, t);
         }
     }
 
@@ -122,14 +130,13 @@ public class Backtracking implements SolucionadorAbstracto {
 
     @Override
     public boolean haySolucion() {
-        return !((Tarea.getCountCriticas() / 2) > procesadores.size());
-    }
-
-    public List<Procesador> getSolucion(){
-        return new ArrayList<>(solucionFinal);
+        return !((this.countCriticas / 2) > procesadores.size());
     }
 
     public int getTiempoFinal(){
+        if (!esPosibleSolucionar)
+            return -1;
+
         return this.tiempoFinal;
     }
 
