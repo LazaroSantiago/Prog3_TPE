@@ -29,20 +29,34 @@ public class Backtracking implements SolucionadorAbstracto {
     }
 
     //La complejidad es:
-    // O(n^m) siendo n la cantidad de procesadores y m la cantidad de tareas
+    //O(n^m) siendo n la cantidad de procesadores y m la cantidad de tareas
 
-    //la solucion es un backtracking clasico:
+    //La tecnica utilizada es un backtracking clasico, con una condicion de poda
+    //Se tiene una lista de solucion final, que es donde va a aparecer el problema resuelto de manera optima
+    //Se lleva una solucion actual, que representa cada rama del arbol de soluciones.
+    //Al llegar a la hoja de cada rama, se compara la solucion actual con la final y se decide con cual de las dos quedarse.
 
-    //el caso recursivo consiste en obtener la primer tarea de la lista de tareas
-    //luego, por cada procesador, revisar si se la puede agregar a ese procesador
-    //en caso de que se pueda, se hace backtracking, y al final del backtracking se la remueve del procesador
-    //finalmente, se la vuelve a agregar al principio de la lista
+    //Caso Recursivo
+    //El caso recursivo consiste en:
+    //Paso 1: Extraer la primer Tarea t de la lista de tareas
+    //Verificaciones y poda:
+    //Paso 2: Por cada Procesador p, verifico si es posible asignarle t
+    //Paso 3: En caso de que sea posible asignar t a p, verifico que la solucion actual no sea peor a la solucion final (Esta seria la poda. Si solucion actual es peor a solucion final, no tiene sentido preocuparme por esos casos. Se que NO hay una solucion optima siguiendo esa rama)
+    //Backtracking:
+    //Paso 4: Si los chequeos en los pasos 1 y 2 fueron positivos, se hace un llamado recursivo
+    //Deshacer cambios:
+    //Paso 5: Se remueve t de p
+    //Paso 6: Se vuelve a agregar t a la lista de tareas
 
-    //el caso de corte es que la lista de tareas este vacia
-    //si lo esta, se revisa si la solucion actual es mejor que la final
-    //en caso de que lo sea, la solucion actual se vuelve la final
+    //Caso de corte
+    //Eventualmente, al remover todas las tareas de la lista de tareas se va a llegar a la condicion de corte.
+    //La condicion de corte es, justamente, que la lista de tareas este vacia. Eso significa que se llego a un estado final.
+    //Paso 1: Verificar que la lista de tareas este vacia
+    //Paso 2: Verificar que la solucion actual sea mejor que la final
+    //Paso 3: En caso de que lo sea, la solucion final se vuelve la actual
 
-    //la solucion va a aparecer en el ArrayList solucionFinal
+    //Luego de recorrer todos los estados posibles (a excepcion de los podados, porque es innecesario),
+    //la solucion optima va a estar en el ArrayList SolucionFinal.
 
     public void backtracking(int tiempo) {
         int countTareas = refrezcar(tiempo);

@@ -60,7 +60,12 @@ public class Servicios {
     /*
      * Complejidad temporal:
      * O(n) siendo n las tareas desde prioridadInferior hasta prioridadSuperior
-     * Sigue siendo O(n) pero, en promedio va a ser mejor a recorrer todas las tareas linealmente
+     * Para Servicio 3 se utiliza un Red-Black Tree. Es un arbol binario de busqueda con auto-balanceo.
+     * Tiene un entero que representa la prioridad como clave y una lista de tareas como valor.
+     * Ya que la estructura esta ordenada por prioridad, obtener las tareas desde prioridad X a prioridad Y es tan facil como pedirle al arbol los valores desde X a Y.
+     * El unico problema es que hay tareas que pueden tener la misma prioridad, por eso hay una lista de listas de tarea (una lista de tareas por cada clave).
+     * Esto requiere "aplanar" (transformar la lista de listas en una sola lista) al final. Este aplanamiento se hace una vez por cada elemento que haya entre prioridad superior e inferior.
+     * La complejidad sigue siendo O(n) pero, en promedio va a ser mejor a recorrer todas las tareas linealmente.
      */
     public List<Tarea> servicio3(int prioridadInferior, int
             prioridadSuperior) {
