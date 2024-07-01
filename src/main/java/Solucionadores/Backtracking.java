@@ -19,7 +19,7 @@ public class Backtracking implements SolucionadorAbstracto {
     private int countEstados;
     private int countCriticas;
 
-    public Backtracking (Servicios servicios){
+    public Backtracking(Servicios servicios) {
         this.procesadores = servicios.getProcesadores();
         this.tareas = servicios.getTareas();
         this.countCriticas = servicios.countCriticas();
@@ -34,13 +34,13 @@ public class Backtracking implements SolucionadorAbstracto {
     //la solucion es un backtracking clasico:
 
     //el caso recursivo consiste en obtener la primer tarea de la lista de tareas
-        //luego, por cada procesador, revisar si se la puede agregar a ese procesador
-            //en caso de que se pueda, se hace backtracking, y al final del backtracking se la remueve del procesador
+    //luego, por cada procesador, revisar si se la puede agregar a ese procesador
+    //en caso de que se pueda, se hace backtracking, y al final del backtracking se la remueve del procesador
     //finalmente, se la vuelve a agregar al principio de la lista
 
     //el caso de corte es que la lista de tareas este vacia
-        //si lo esta, se revisa si la solucion actual es mejor que la final
-            //en caso de que lo sea, la solucion actual se vuelve la final
+    //si lo esta, se revisa si la solucion actual es mejor que la final
+    //en caso de que lo sea, la solucion actual se vuelve la final
 
     //la solucion va a aparecer en el ArrayList solucionFinal
 
@@ -90,7 +90,7 @@ public class Backtracking implements SolucionadorAbstracto {
     }
 
     @Override
-    public boolean verificarSolucion(int countTareas){
+    public boolean verificarSolucion(int countTareas) {
         //si se llego a una solucion valida,
         //la cantidad de tareas en solucion final
         //deberia ser igual a la cantidad de tareas con las que se empezo
@@ -133,7 +133,7 @@ public class Backtracking implements SolucionadorAbstracto {
         return !((this.countCriticas / 2) > procesadores.size());
     }
 
-    public int getTiempoFinal(){
+    public int getTiempoFinal() {
         if (!esPosibleSolucionar)
             return -1;
 
@@ -141,12 +141,12 @@ public class Backtracking implements SolucionadorAbstracto {
     }
 
     @Override
-    public int getMetrica(){
+    public int getMetrica() {
         return this.countEstados;
     }
 
     @Override
-    public String printMetrica(){
+    public String printMetrica() {
         return "Cantidad estados: " + getMetrica();
     }
 

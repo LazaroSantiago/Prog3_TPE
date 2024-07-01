@@ -16,7 +16,7 @@ public class Greedy implements SolucionadorAbstracto {
     private int countCriticas;
     private int tiempoFinal;
 
-    public Greedy(Servicios servicios){
+    public Greedy(Servicios servicios) {
         this.procesadores = servicios.getProcesadores();
         this.tareas = servicios.getTareas();
         this.countCriticas = servicios.countCriticas();
@@ -39,7 +39,7 @@ public class Greedy implements SolucionadorAbstracto {
         if (!haySolucion())
             return;
 
-        //Paso 1 (ordenar tareas)
+        //Paso 1: ordenar tareas
         int countTareas = refrezcar(tiempo);
 
         while (!tareas.isEmpty()) {
@@ -48,7 +48,7 @@ public class Greedy implements SolucionadorAbstracto {
             esPosibleSolucionar = seleccionar(t);
 
             //si no hay solucion posible, corto la ejecucion
-            if (!esPosibleSolucionar){
+            if (!esPosibleSolucionar) {
                 setTiempoFinal();
                 return;
             }
@@ -71,7 +71,7 @@ public class Greedy implements SolucionadorAbstracto {
     }
 
     private void setTiempoFinal() {
-        if (!esPosibleSolucionar){
+        if (!esPosibleSolucionar) {
             tiempoFinal = -1;
         } else {
             int tiempoMayor = 0;
@@ -94,24 +94,24 @@ public class Greedy implements SolucionadorAbstracto {
     private boolean seleccionar(Tarea t) {
         countCandidatos++;
 
-        //Paso 2 (ordenar procesadores)
+        //Paso 2: ordenar procesadores
         Collections.sort(procesadores);
-        //Paso 3 (intentar agregar)
+        //Paso 3: intentar agregar
         for (Procesador p : procesadores)
             if (p.agregarTarea(t))
                 return true;
 
-        //Paso 4 (Si no puedo agregar, retornar falso.)
+        //Paso 4: si no puedo agregar, retornar falso.
         return false;
     }
 
     @Override
-    public int getMetrica(){
+    public int getMetrica() {
         return this.countCandidatos;
     }
 
     @Override
-    public String printMetrica(){
+    public String printMetrica() {
         return "Cantidad candidatos: " + getMetrica();
     }
 
@@ -124,7 +124,7 @@ public class Greedy implements SolucionadorAbstracto {
         return new ArrayList<>(procesadores);
     }
 
-    public boolean verificarSolucion(int countTareas){
+    public boolean verificarSolucion(int countTareas) {
         //si se llego a una solucion valida,
         //la cantidad de tareas en solucion final
         //deberia ser igual a la cantidad de tareas con las que se empezo
