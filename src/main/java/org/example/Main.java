@@ -5,14 +5,12 @@ import Solucionadores.Greedy;
 import Solucionadores.SolucionadorAbstracto;
 
 public class Main {
-    private final static String PROCESADORES = "C:\\Users\\Espacio Laboral\\Desktop\\Prog3_TPE-master\\Prog3_TPE-master\\src\\main\\java\\datasets\\Procesadores.csv";
+    private final static String PROCESADORES = "src/main/resources/datasets/Procesadores.csv";
 
-    private final static String TAREAS_1 = "C:\\Users\\Espacio Laboral\\Desktop\\Prog3_TPE-master\\Prog3_TPE-master\\src\\main\\java\\datasets\\Tareas1.csv";
-    private final static String TAREAS_2 = "C:\\Users\\Espacio Laboral\\Desktop\\Prog3_TPE-master\\Prog3_TPE-master\\src\\main\\java\\datasets\\Tareas2.csv";
+    private final static String TAREAS_1 = "src/main/resources/datasets/Tareas1.csv";
+    private final static String TAREAS_2 = "src/main/resources/datasets/Tareas2.csv";
 
     public static void main(String[] args) {
-        //Primero editar rutas de tareas y procesadores o no va a andar absolutamente nada!
-
         //Testea los 5 casos que figuran en la planilla para Backtracking y Greedy:
         testearBacktracking();
         testearGreedy();
